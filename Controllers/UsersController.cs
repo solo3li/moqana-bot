@@ -17,9 +17,22 @@ public class UsersController : Controller
         _dbContext = dbContext;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string? searchQuery)
     {
-        var users = await _dbContext.BotUsers.OrderByDescending(u => u.JoinedAt).ToListAsync();
+        var usersQuery = _dbContext.BotUsers.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(searchQuery))
+        {
+            var searchLower = searchQuery.ToLower();
+            usersQuery = usersQuery.Where(u => 
+                (u.FirstName != null && u.FirstName.ToLower().Contains(searchLower)) ||
+                (u.LastName != null && u.LastName.ToLower().Contains(searchLower)) ||
+                (u.Username != null && u.Username.ToLower().Contains(searchLower)) ||
+                u.ChatId.ToString().Contains(searchLower));
+        }
+
+        var users = await usersQuery.OrderByDescending(u => u.JoinedAt).ToListAsync();
+        ViewData["SearchQuery"] = searchQuery;
         return View(users);
     }
 

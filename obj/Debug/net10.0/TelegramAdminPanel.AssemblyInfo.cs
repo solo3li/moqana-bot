@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TelegramAdminPanel")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+61b58f222f73303b2ba5af4e54222c13c5e90fac")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1e24aa97b8a102af43787589c637a2fe262b3022")]
 [assembly: System.Reflection.AssemblyProductAttribute("TelegramAdminPanel")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TelegramAdminPanel")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

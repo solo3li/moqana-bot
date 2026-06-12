@@ -4,10 +4,20 @@
     ViewData["Title"] = "Users & Chats";
 }
 
-<div class="row mb-4">
-    <div class="col-12">
+<div class="row mb-4 align-items-center">
+    <div class="col-md-6">
         <h2 class="fw-bold">Users & Chats</h2>
-        <p class="text-muted">Manage users who interacted with your bot.</p>
+        <p class="text-muted">Manage all users who interacted with your bot.</p>
+    </div>
+    <div class="col-md-6 text-md-end">
+        <form method="get" asp-action="Index" class="d-flex justify-content-md-end gap-2">
+            <input type="text" name="searchQuery" value="@ViewData["SearchQuery"]" class="form-control" placeholder="Search by name, username or ID..." style="max-width: 300px;" />
+            <button type="submit" class="btn btn-primary" style="padding: 12px 16px;">Search</button>
+            @if (!string.IsNullOrEmpty(ViewData["SearchQuery"]?.ToString()))
+            {
+                <a asp-action="Index" class="btn btn-outline-light" style="padding: 12px 16px;">Clear</a>
+            }
+        </form>
     </div>
 </div>
 
