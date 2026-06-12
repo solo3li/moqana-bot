@@ -12,6 +12,7 @@ namespace TelegramAdminPanel.Data
         public DbSet<BotSetting> BotSettings { get; set; }
         public DbSet<BotUser> BotUsers { get; set; }
         public DbSet<BotMessage> BotMessages { get; set; }
+        public DbSet<AdminUser> AdminUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

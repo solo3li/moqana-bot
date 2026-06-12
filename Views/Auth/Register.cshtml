@@ -1,0 +1,105 @@
+@{
+    ViewData["Title"] = "Register";
+    Layout = null; // No sidebar for login/register pages
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Bot Admin</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        body {
+            background-color: var(--bg-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .register-card {
+            background: var(--bg-card);
+            border: none;
+            border-radius: 0;
+            padding: 48px;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .register-logo {
+            color: var(--accent);
+            margin-bottom: 24px;
+        }
+        h2 {
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            letter-spacing: 0;
+        }
+        p {
+            color: var(--text-muted);
+            margin-bottom: 32px;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-card">
+        @if (ViewData["RegistrationClosed"] != null && (bool)ViewData["RegistrationClosed"])
+        {
+            <div class="text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="register-logo" style="color: #da1e28;"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <h2>Registration Closed</h2>
+                <p>An administrator account already exists. For security reasons, open registration is disabled.</p>
+                <a asp-action="Login" class="btn btn-primary w-100 mt-2">Return to Login</a>
+            </div>
+        }
+        else
+        {
+            <div class="text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="register-logo"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
+                <h2>Create Account</h2>
+                <p>Register as the initial administrator.</p>
+            </div>
+
+            @if (ViewData["ErrorMessage"] != null)
+            {
+                <div style="background-color: #ffe6e6; border-left: 3px solid #da1e28; padding: 16px; margin-bottom: 24px; color: #161616; font-size: 0.875rem;">
+                    @ViewData["ErrorMessage"]
+                </div>
+            }
+
+            <form asp-action="Register" method="post">
+                @Html.AntiForgeryToken()
+                
+                <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    <input type="text" name="username" class="form-control" required autofocus />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control" required />
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Confirm Password</label>
+                    <input type="password" name="confirmPassword" class="form-control" required />
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100" style="display: block; text-align: center; margin-bottom: 16px;">Register</button>
+                
+                <div class="text-center">
+                    <a asp-action="Login" style="color: var(--accent); font-size: 0.875rem; text-decoration: none;">Already have an account? Log in</a>
+                </div>
+            </form>
+        }
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
