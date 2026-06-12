@@ -64,6 +64,13 @@
                         <input type="file" name="mediaFile" id="mediaFile" accept="image/*,video/*,audio/*" class="d-none" />
                     </label>
 
+                    <!-- Record Voice Button -->
+                    <button type="button" id="recordBtn" class="btn btn-outline-secondary rounded-circle p-2 mb-0 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border-color: var(--border-color);" title="Record Voice">
+                        <svg id="micIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+                    </button>
+                    
+                    <span id="recordTimer" class="d-none ms-2 me-2 fw-bold text-danger" style="min-width: 45px;">00:00</span>
+
                     <input type="text" name="text" id="messageText" class="form-control rounded-pill px-4" placeholder="Type a message to send via Bot..." autocomplete="off" />
                     
                     <button type="submit" class="btn btn-primary rounded-pill px-4 d-flex align-items-center">
@@ -130,5 +137,83 @@
         if (!mediaInput.files || mediaInput.files.length === 0) {
             messageText.required = true;
         }
+
+        // Voice Recording Logic
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
+        let recordInterval;
+        let recordSeconds = 0;
+
+        const recordBtn = document.getElementById('recordBtn');
+        const recordTimer = document.getElementById('recordTimer');
+        const micIcon = document.getElementById('micIcon');
+
+        recordBtn.addEventListener('click', async function() {
+            if (!isRecording) {
+                // Start Recording
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+
+                    mediaRecorder.addEventListener("dataavailable", event => {
+                        audioChunks.push(event.data);
+                    });
+
+                    mediaRecorder.addEventListener("stop", () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        
+                        // Create File from Blob and put it in the file input
+                        const audioFile = new File([audioBlob], "voice_message.webm", { type: "audio/webm", lastModified: new Date().getTime() });
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(audioFile);
+                        mediaInput.files = dataTransfer.files;
+                        
+                        // Trigger change event to show preview
+                        const event = new Event('change');
+                        mediaInput.dispatchEvent(event);
+
+                        // Stop all tracks to release mic
+                        stream.getTracks().forEach(track => track.stop());
+                    });
+
+                    mediaRecorder.start();
+                    isRecording = true;
+                    
+                    // UI changes
+                    recordBtn.classList.add('record-pulse');
+                    micIcon.innerHTML = '<rect x="6" y="6" width="12" height="12" rx="2" ry="2"></rect>'; // Stop icon
+                    recordTimer.classList.remove('d-none');
+                    messageText.disabled = true;
+                    messageText.placeholder = "Recording...";
+
+                    // Timer
+                    recordSeconds = 0;
+                    recordTimer.innerText = "00:00";
+                    recordInterval = setInterval(() => {
+                        recordSeconds++;
+                        const mins = String(Math.floor(recordSeconds / 60)).padStart(2, '0');
+                        const secs = String(recordSeconds % 60).padStart(2, '0');
+                        recordTimer.innerText = `${mins}:${secs}`;
+                    }, 1000);
+
+                } catch (err) {
+                    alert("Could not access microphone: " + err);
+                }
+            } else {
+                // Stop Recording
+                mediaRecorder.stop();
+                isRecording = false;
+                
+                // UI changes
+                recordBtn.classList.remove('record-pulse');
+                micIcon.innerHTML = '<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/>';
+                recordTimer.classList.add('d-none');
+                clearInterval(recordInterval);
+                messageText.disabled = false;
+                messageText.placeholder = "Type a message to send via Bot...";
+            }
+        });
     </script>
 }
