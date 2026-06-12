@@ -1,0 +1,33 @@
+@{
+    ViewData["Title"] = "Settings";
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="fw-bold">Bot Settings</h2>
+        <p class="text-muted">Configure your Telegram Bot token and welcome message.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8 col-lg-6">
+        <div class="premium-card">
+            <form asp-action="Save" method="post">
+                @Html.AntiForgeryToken()
+                <div class="mb-4">
+                    <label for="botToken" class="form-label fw-semibold">Telegram Bot Token</label>
+                    <input type="password" class="form-control" id="botToken" name="botToken" value="@ViewBag.BotToken" placeholder="123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11">
+                    <div class="form-text text-muted mt-2">Get this token from <a href="https://t.me/BotFather" target="_blank" class="text-accent text-decoration-none">@@BotFather</a> on Telegram.</div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="welcomeMessage" class="form-label fw-semibold">Welcome Message (/start)</label>
+                    <textarea class="form-control" id="welcomeMessage" name="welcomeMessage" rows="4">@ViewBag.WelcomeMessage</textarea>
+                    <div class="form-text text-muted mt-2">This message will be sent when a user starts the bot.</div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Save Configuration</button>
+            </form>
+        </div>
+    </div>
+</div>

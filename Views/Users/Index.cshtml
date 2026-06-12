@@ -1,0 +1,97 @@
+@model IEnumerable<TelegramAdminPanel.Models.BotUser>
+
+@{
+    ViewData["Title"] = "Users & Chats";
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="fw-bold">Users & Chats</h2>
+        <p class="text-muted">Manage users who interacted with your bot.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="premium-card p-0 overflow-hidden">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead style="background: #f8fafc;">
+                        <tr>
+                            <th class="ps-4">User</th>
+                            <th>Chat ID</th>
+                            <th>Joined At</th>
+                            <th class="text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; font-weight: bold;">
+                                            @((user.FirstName?.FirstOrDefault() ?? user.Username?.FirstOrDefault() ?? '?').ToString().ToUpper())
+                                        </div>
+                                        <div>
+                                            <div class="fw-semibold">@user.FirstName @user.LastName</div>
+                                            @if (!string.IsNullOrEmpty(user.Username))
+                                            {
+                                                <div class="text-muted small">@@@user.Username</div>
+                                            }
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-secondary">@user.ChatId</span></td>
+                                <td>@user.JoinedAt.ToString("MMM dd, yyyy HH:mm")</td>
+                                <td class="text-end pe-4">
+                                    <button type="button" class="btn btn-sm btn-primary rounded-pill px-3 me-2" data-bs-toggle="modal" data-bs-target="#sendMessageModal-@user.ChatId">
+                                        Send Message
+                                    </button>
+                                    <a asp-action="Chat" asp-route-id="@user.ChatId" class="btn btn-sm btn-outline-light rounded-pill px-3">View Chat</a>
+                                </td>
+                            </tr>
+
+                            <!-- Send Message Modal -->
+                            <div class="modal fade" id="sendMessageModal-@user.ChatId" tabindex="-1" aria-labelledby="sendMessageModalLabel-@user.ChatId" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+                                        <div class="modal-header border-0 pb-0">
+                                            <h5 class="modal-title fw-bold" id="sendMessageModalLabel-@user.ChatId">Message to @user.FirstName</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form asp-action="SendMessage" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <div class="modal-body">
+                                                <input type="hidden" name="chatId" value="@user.ChatId" />
+                                                <input type="hidden" name="returnUrl" value="/Users/Index" />
+                                                <div class="mb-3">
+                                                    <label class="form-label text-muted">Message</label>
+                                                    <textarea name="text" class="form-control" rows="4" placeholder="Type your message here..." required></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer border-0 pt-0">
+                                                <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn btn-primary">Send Message</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        
+                        @if(!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="4" class="text-center py-5 text-muted">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="mb-3 opacity-50"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                                    <p>No users found yet. Once someone sends a message to the bot, they'll appear here.</p>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

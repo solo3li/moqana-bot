@@ -1,0 +1,74 @@
+@model IEnumerable<TelegramAdminPanel.Models.BotMessage>
+@{
+    var user = ViewBag.User as TelegramAdminPanel.Models.BotUser;
+    ViewData["Title"] = $"Chat with {user?.FirstName}";
+}
+
+<div class="row mb-4 align-items-center">
+    <div class="col-auto">
+        <a asp-action="Index" class="btn btn-outline-secondary rounded-circle p-2" style="border-color: var(--border-color);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        </a>
+    </div>
+    <div class="col">
+        <h2 class="fw-bold mb-0">@user?.FirstName @user?.LastName</h2>
+        <p class="text-muted mb-0">@@@user?.Username | ID: @user?.ChatId</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8 col-lg-6 mx-auto">
+        <div class="premium-card p-0 d-flex flex-column" style="height: 600px;">
+            <!-- Chat Header -->
+            <div class="p-3 border-bottom" style="background: var(--bg-card);">
+                <div class="d-flex align-items-center">
+                    <div class="avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; font-weight: bold;">
+                        @((user?.FirstName?.FirstOrDefault() ?? user?.Username?.FirstOrDefault() ?? '?').ToString().ToUpper())
+                    </div>
+                    <div class="fw-semibold">Conversation History</div>
+                </div>
+            </div>
+
+            <!-- Chat Messages -->
+            <div class="flex-grow-1 p-4 chat-container" id="chatContainer">
+                @if (!Model.Any())
+                {
+                    <div class="text-center text-muted mt-5">
+                        <p>No messages in this conversation yet.</p>
+                    </div>
+                }
+                
+                @foreach (var msg in Model)
+                {
+                    <div class="chat-bubble @(msg.IsFromBot ? "bot" : "user")">
+                        <div>@msg.Text</div>
+                        <span class="chat-time text-end">@msg.Timestamp.ToString("MMM dd, HH:mm")</span>
+                    </div>
+                }
+            </div>
+
+            <!-- Chat Input -->
+            <div class="p-3 border-top" style="background: var(--bg-card);">
+                <form asp-action="SendMessage" method="post" class="d-flex gap-2">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="chatId" value="@user?.ChatId" />
+                    <input type="text" name="text" class="form-control rounded-pill px-4" placeholder="Type a message to send via Bot..." required autocomplete="off" />
+                    <button type="submit" class="btn btn-primary rounded-pill px-4 d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                        Send
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Auto scroll to bottom
+        var container = document.getElementById("chatContainer");
+        if (container) {
+            container.scrollTop = container.scrollHeight;
+        }
+    </script>
+}
