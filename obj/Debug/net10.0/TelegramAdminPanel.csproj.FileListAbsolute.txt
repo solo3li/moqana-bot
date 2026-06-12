@@ -186,4 +186,5 @@
 /root/telebot/moqana/obj/Debug/net10.0/TelegramAdminPanel.pdb
 /root/telebot/moqana/obj/Debug/net10.0/TelegramAdminPanel.genruntimeconfig.cache
 /root/telebot/moqana/obj/Debug/net10.0/ref/TelegramAdminPanel.dll
-/root/telebot/moqana/obj/Debug/net10.0/compressed/h463mlmxtq-{0}-f8xpmt92ea-f8xpmt92ea.gz
+/root/telebot/moqana/obj/Debug/net10.0/TelegramAdminPanel.sourcelink.json
+/root/telebot/moqana/obj/Debug/net10.0/compressed/h463mlmxtq-{0}-74beoe8y39-74beoe8y39.gz
