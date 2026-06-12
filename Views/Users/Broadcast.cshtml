@@ -26,11 +26,24 @@
                 </div>
             </div>
 
-            <form asp-action="SendBroadcast" method="post">
+            <form asp-action="SendBroadcast" method="post" enctype="multipart/form-data">
                 @Html.AntiForgeryToken()
+                
+                <div class="mb-4">
+                    <label class="form-label">Attach Media (Optional)</label>
+                    <input type="file" name="mediaFile" id="mediaFile" accept="image/*,video/*,audio/*" class="form-control" />
+                    <div class="form-text">You can attach an image, video, or audio file to broadcast to all users.</div>
+                </div>
+
+                <!-- Media Preview Area -->
+                <div id="mediaPreviewContainer" class="mb-4 d-none" style="position: relative; max-width: 100%; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); padding: 10px; background: var(--bg-main);">
+                    <button type="button" class="btn-close" id="clearMediaBtn" style="position: absolute; top: 10px; right: 10px; z-index: 10; background-color: var(--bg-card); padding: 6px; border-radius: 50%;" aria-label="Close"></button>
+                    <div id="previewContent" class="text-center"></div>
+                </div>
+
                 <div class="mb-5">
                     <label for="text" class="form-label">Message Content</label>
-                    <textarea class="form-control" id="text" name="text" rows="6" placeholder="Write your announcement or broadcast message here..." required></textarea>
+                    <textarea class="form-control" id="messageText" name="text" rows="6" placeholder="Write your announcement or broadcast message here..."></textarea>
                 </div>
 
                 <div class="d-flex justify-content-end">
@@ -43,3 +56,53 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        const mediaInput = document.getElementById('mediaFile');
+        const mediaPreviewContainer = document.getElementById('mediaPreviewContainer');
+        const previewContent = document.getElementById('previewContent');
+        const clearMediaBtn = document.getElementById('clearMediaBtn');
+        const messageText = document.getElementById('messageText');
+
+        mediaInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                let element = '';
+
+                if (file.type.startsWith('image/')) {
+                    element = `<img src="${url}" style="max-width: 100%; max-height: 300px; display: inline-block; border-radius: 4px;" />`;
+                } else if (file.type.startsWith('video/')) {
+                    element = `<video src="${url}" controls style="max-width: 100%; max-height: 300px; display: inline-block; border-radius: 4px;"></video>`;
+                } else if (file.type.startsWith('audio/')) {
+                    element = `<audio src="${url}" controls style="width: 100%; display: inline-block;"></audio>`;
+                } else {
+                    element = `<div class="p-3 bg-secondary text-white text-center rounded">File selected: ${file.name}</div>`;
+                }
+
+                previewContent.innerHTML = element;
+                mediaPreviewContainer.classList.remove('d-none');
+                messageText.required = false; 
+            } else {
+                clearPreview();
+            }
+        });
+
+        clearMediaBtn.addEventListener('click', function() {
+            mediaInput.value = '';
+            clearPreview();
+        });
+
+        function clearPreview() {
+            previewContent.innerHTML = '';
+            mediaPreviewContainer.classList.add('d-none');
+            messageText.required = true;
+        }
+
+        // Initialize required state
+        if (!mediaInput.files || mediaInput.files.length === 0) {
+            messageText.required = true;
+        }
+    </script>
+}
