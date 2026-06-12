@@ -3,40 +3,40 @@
 }
 
 <div class="row mb-4 align-items-center">
-    <div class="col-auto">
-        <a asp-action="Index" class="btn btn-outline-secondary rounded-circle p-2" style="border-color: var(--border-color);">
+    <div class="col-auto pe-0">
+        <a asp-action="Index" class="btn btn-outline-light" style="padding: 8px; border: none; background: transparent;">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
         </a>
     </div>
     <div class="col">
-        <h2 class="fw-bold mb-0">Broadcast Message</h2>
-        <p class="text-muted mb-0">Send a message to all users who have interacted with your bot.</p>
+        <h2 class="mb-0">Broadcast Message</h2>
+        <p class="text-muted mb-0" style="font-size: 0.875rem;">Send a message to all users who have interacted with your bot.</p>
     </div>
 </div>
 
 <div class="row">
     <div class="col-md-8 col-lg-6">
-        <div class="premium-card border-accent border-top-0 border-end-0 border-bottom-0 border-start border-4" style="border-left-color: var(--accent);">
-            <div class="alert alert-warning" style="background: rgba(245, 158, 11, 0.1); border: 1px solid #f59e0b; color: #f59e0b;">
-                <div class="d-flex align-items-start">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-3 flex-shrink-0"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                    <div>
-                        <strong>Warning:</strong> This will send a message to ALL registered users. Please double check your message before sending to avoid spamming your users.
-                    </div>
+        <div class="premium-card">
+            
+            <div style="background-color: #fcf4d6; border-left: 3px solid #f1c21b; padding: 16px; margin-bottom: 32px; display: flex; align-items: flex-start; color: #161616;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f1c21b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-3 mt-1 flex-shrink-0"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                <div>
+                    <strong style="font-size: 0.875rem; display: block; margin-bottom: 4px;">Warning</strong>
+                    <span style="font-size: 0.875rem;">This will send a message to ALL registered users. Please double check your message before sending to avoid spamming your users.</span>
                 </div>
             </div>
 
             <form asp-action="SendBroadcast" method="post">
                 @Html.AntiForgeryToken()
-                <div class="mb-4">
-                    <label for="text" class="form-label fw-semibold">Message Content</label>
+                <div class="mb-5">
+                    <label for="text" class="form-label">Message Content</label>
                     <textarea class="form-control" id="text" name="text" rows="6" placeholder="Write your announcement or broadcast message here..." required></textarea>
                 </div>
 
                 <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-primary px-4 d-flex align-items-center" onclick="return confirm('Are you absolutely sure you want to broadcast this message to ALL users?');">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    <button type="submit" class="btn btn-primary" style="padding-right: 64px; position: relative;" onclick="return confirm('Are you absolutely sure you want to broadcast this message to ALL users?');">
                         Send to Everyone
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%);"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                     </button>
                 </div>
             </form>
